@@ -6,13 +6,21 @@ A fun, mobile-first water challenge for two players. Track daily 500ml glasses, 
 
 **Game link:** [Open Battle H2O](https://wernerrall147.github.io/H2OChallenge/)
 
-Open the link in Safari or Chrome on your phone. Once deployed, you can also use your browser's **Add to Home Screen** option for quick access (an internet connection is still needed).
+Open the link in Safari or Chrome on your phone. Use your browser's **Add to Home Screen** option to install it like an app: it opens full screen with its own icon, and after the first visit it keeps working without an internet connection.
 
 **First-time publishing:** the link only works after GitHub Pages is enabled and the deployment below has succeeded.
 
-The app saves scores and photos only in the current browser on the current device. Both players use the same device; tap the avatar at the top to switch players. Sharing the link does **not** sync a challenge between phones. Clearing browser data or using private browsing can lose your scores.
+The app saves scores and photos only in the current browser on the current device. Both players use the same device; tap your name at the top to pass the phone, and a hand-off screen hides your scorecard while you swap. Sharing the link does **not** sync a challenge between phones. Clearing browser data or using private browsing can lose your scores.
 
-Use **More → Download CSV** before ending a challenge, and **More → Copy link** to share the app. The CSV exports scores and weights, not photos, and cannot be imported back into the app.
+Use **More → Download CSV** before ending a challenge, and **More → Share link** to share the app. The CSV exports scores and weights, not photos, and cannot be imported back into the app.
+
+### On your phone
+
+- **Today:** a glass that fills as you log each 500 ml with one big button (plus undo), your streak, and the whole round as a 14-drop tide chart. Tap any day to fix a glass, add a weight, or ask for an unlock.
+- **Battle:** head-to-head water tanks, the road to the crown, and your remaining peeks.
+- **Prizes** and **More:** the prizes, profile photo, late-day approvals (the tab shows a badge when one is waiting), sharing, CSV export and End & delete.
+- Hitting the daily goal sets off a droplet burst and a streak toast (and a short buzz on Android). The app follows your phone's dark mode and reduced-motion settings and respects the notch and home-indicator safe areas.
+- **iPhone tip:** add the app to your Home Screen *before* you start the challenge, then always open it from that icon. Scores saved in Safari may not carry over to the Home Screen app, and Safari can clear data for sites you haven't opened in a while. The app shows this tip in Safari on iPhone.
 
 ## Publish the phone link
 
@@ -22,7 +30,7 @@ If your GitHub plan requires a public repository for Pages, complete the privacy
 2. Merge these changes into `main`. The **Deploy to GitHub Pages** workflow builds and publishes the app automatically on pushes to `main`. You can also run it manually from **Actions**, selecting `main`.
 3. Wait for the workflow's **deploy** job to succeed, then open the game link above. If it shows a 404, check the Pages setting and deployment status first.
 
-Pull requests build the app for verification but do not publish it. Vite's base path is configured for `/H2OChallenge/`, so JavaScript and CSS load correctly from the repository's Pages URL.
+Pull requests run the tests and build the app for verification but do not publish it. Vite's base path is configured for `/H2OChallenge/`, so JavaScript and CSS load correctly from the repository's Pages URL.
 
 ### Before making the repository public
 
@@ -30,7 +38,7 @@ Pull requests build the app for verification but do not publish it. Vite's base 
 - Review issues, pull requests, comments, screenshots, attachments, releases, Actions logs and artifacts for personal information. These are not covered by a source-file scan. Remove sensitive content before publication; for exposed credentials, revoke/rotate them first and follow GitHub's sensitive-data removal guidance. Do not assume switching back to private retracts copies.
 - Never commit real player data, photos, CSV exports, `.env` files or tokens. Ignore rules help prevent accidental additions but do not sanitize files already tracked or their history.
 - In **Settings → Code security** (the label may vary), enable the dependency graph, Dependabot alerts/security updates, secret scanning and push protection where available. Recheck after switching to public because availability depends on visibility/plan. Review and resolve alerts; secret scanning is not a general PII detector.
-- This repository includes weekly Dependabot updates for npm and GitHub Actions, a dependency audit on builds, and a production build on pull requests. Require the build check on `main` using a branch rule/ruleset where available, review dependency updates, and restrict the `github-pages` environment to `main`.
+- This repository includes weekly Dependabot updates for npm and GitHub Actions, a dependency audit on builds, and tests plus a production build on pull requests. Require the build check on `main` using a branch rule/ruleset where available, review dependency updates, and restrict the `github-pages` environment to `main`.
 - Only `dist/` is published as the Pages artifact. Do not add personal files or secrets to source code, `public/`, or `VITE_*` variables: Vite exposes those variables in the browser bundle.
 
 No automated scan can certify that a repository contains no PII. Complete the history and GitHub-content review before approving publication.
@@ -98,6 +106,8 @@ On iOS, open the game link in Safari and use **Share → Add to Home Screen**. T
 - GitHub serves the site and can receive normal request metadata such as IP addresses; local-only challenge storage does not mean anonymous hosting.
 - **More → End & delete** removes this app's saved challenge, including names, photos and weights, from that browser profile. It does not delete downloaded CSVs, original photos, screenshots or device backups. Downloaded CSVs contain player names and weights; keep them private and delete them separately when no longer needed.
 - Sharing the app link does not upload or synchronize player data. Making the source repository public does not upload existing browser-stored challenges.
+- Photos are cropped and shrunk to a small square on the device before they are saved, so large phone photos work without filling browser storage.
+- Offline support uses a service worker that caches only the app's own files (HTML, scripts, styles and icons). It never stores challenge data; that stays in `localStorage`.
 
 ### Enable Pages from the command line
 
@@ -144,4 +154,6 @@ npm run dev
 
 Use Node.js 22.12 or newer. Open the local URL printed by Vite.
 
-Build the static site with `npm run build`; the deployable files are in `dist/`. To check the production build locally, run `npm run preview` and open the printed `/H2OChallenge/` URL.
+Run `npm test` to check the game rules (rounds, goals, locks, unlock requests, peeks, streaks and the CSV export). The tests use Node's built-in test runner, so they need no extra dependencies.
+
+Build the static site with `npm run build`; the deployable files are in `dist/`. To check the production build locally, run `npm run preview` and open the printed `/H2OChallenge/` URL. The offline service worker only runs in the production build.

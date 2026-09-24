@@ -31,6 +31,8 @@ jobs:
         run: npm ci
       - name: Audit dependencies
         run: npm audit --audit-level=high
+      - name: Run tests
+        run: npm test
       - name: Build app
         run: npm run build
       - name: Upload site
